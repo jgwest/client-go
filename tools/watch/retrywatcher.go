@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -127,7 +128,8 @@ func (rw *RetryWatcher) doReceive() (bool, time.Duration) {
 			return false, 0
 		}
 
-		klog.ErrorS(err, msg)
+		klog.ErrorS(err, msg, "jgw", rw.lastResourceVersion, "watchClient-type",
+			reflect.TypeOf(rw.watcherClient))
 		// Retry
 		return false, 0
 	}

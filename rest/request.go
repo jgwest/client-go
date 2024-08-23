@@ -722,10 +722,15 @@ func (r *Request) Watch(ctx context.Context) (watch.Interface, error) {
 
 		req, err := r.newHTTPRequest(ctx)
 		if err != nil {
+			fmt.Println("jgw-error-1", err)
 			return nil, err
 		}
 
 		resp, err := client.Do(req)
+
+		if err != nil {
+			fmt.Println("jgw-error-2", err)
+		}
 		updateURLMetrics(ctx, r, resp, err)
 		retry.After(ctx, r, resp, err)
 		if err == nil && resp.StatusCode == http.StatusOK {
