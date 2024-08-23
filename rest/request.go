@@ -22,12 +22,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	mrand "math/rand"
 	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
 	"reflect"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -718,6 +720,9 @@ func (r *Request) Watch(ctx context.Context) (watch.Interface, error) {
 	for {
 		if err := retry.Before(ctx, r); err != nil {
 			fmt.Println("jgw-error-0", err, url)
+			if mrand.Int()%20 == 0 {
+				debug.PrintStack()
+			}
 			return nil, retry.WrapPreviousError(err)
 		}
 

@@ -197,6 +197,7 @@ func (r *withRetry) Before(ctx context.Context, request *Request) error {
 	// is no need to retry.
 	if ctx.Err() != nil {
 		r.trackPreviousError(ctx.Err())
+		fmt.Println("jgw-with-retry 0", ctx.Err())
 		return ctx.Err()
 	}
 
@@ -228,6 +229,7 @@ func (r *withRetry) Before(ctx context.Context, request *Request) error {
 	// also be throttled with the client-internal rate limiter.
 	if err := request.tryThrottleWithInfo(ctx, r.retryAfter.Reason); err != nil {
 		r.trackPreviousError(ctx.Err())
+		fmt.Println("jgw-with-retry 1", ctx.Err())
 		return err
 	}
 
