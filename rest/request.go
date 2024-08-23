@@ -717,19 +717,20 @@ func (r *Request) Watch(ctx context.Context) (watch.Interface, error) {
 	url := r.URL().String()
 	for {
 		if err := retry.Before(ctx, r); err != nil {
+			fmt.Println("jgw-error-0", err, url)
 			return nil, retry.WrapPreviousError(err)
 		}
 
 		req, err := r.newHTTPRequest(ctx)
 		if err != nil {
-			fmt.Println("jgw-error-1", err)
+			fmt.Println("jgw-error-1", err, url)
 			return nil, err
 		}
 
 		resp, err := client.Do(req)
 
 		if err != nil {
-			fmt.Println("jgw-error-2", err)
+			fmt.Println("jgw-error-2", err, url)
 		}
 		updateURLMetrics(ctx, r, resp, err)
 		retry.After(ctx, r, resp, err)
@@ -749,6 +750,7 @@ func (r *Request) Watch(ctx context.Context) (watch.Interface, error) {
 				return true, nil
 			}
 			if result := r.transformResponse(resp, req); result.err != nil {
+				fmt.Println("jgw-error-3", err, url)
 				return true, result.err
 			}
 			return true, fmt.Errorf("for request %s, got status: %v", url, resp.StatusCode)
@@ -762,6 +764,7 @@ func (r *Request) Watch(ctx context.Context) (watch.Interface, error) {
 				// we need to return the error object from that.
 				err = transformErr
 			}
+			fmt.Println("jgw-error-4", err, url)
 			return nil, retry.WrapPreviousError(err)
 		}
 	}
